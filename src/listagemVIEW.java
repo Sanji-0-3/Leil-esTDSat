@@ -50,7 +50,7 @@ public class listagemVIEW extends javax.swing.JFrame {
         btnVendas = new javax.swing.JButton();
         btnVoltar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabelaProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -145,23 +145,38 @@ public class listagemVIEW extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
-        int linhaSelecionada = tabelaProdutos.getSelectedRow();
-if (linhaSelecionada != -1) {
-    int id = Integer.parseInt(tabelaProdutos.getValueAt(linhaSelecionada, 0).toString());
-    ProdutosDAO dao = new ProdutosDAO();
-    dao.venderProduto(id);
-    JOptionPane.showMessageDialog(null, "Produto vendido com sucesso!");
-    listarProdutos(); // atualiza a tabela
-} else {
-    JOptionPane.showMessageDialog(null, "Selecione um produto para vender.");
-}
+        ProdutosDAO dao = new ProdutosDAO();
 
-        String id = id_produto_venda.getText();
-        
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
-        //produtosdao.venderProduto(Integer.parseInt(id));
-        listarProdutos();
+    boolean vendeu = false;
+
+    // 1. Tenta vender pelo ID digitado
+    String idTexto = id_produto_venda.getText().trim();
+    if (!idTexto.isEmpty()) {
+        try {
+            int idDigitado = Integer.parseInt(idTexto);
+            dao.venderProduto(idDigitado);
+            JOptionPane.showMessageDialog(null, "Produto vendido com sucesso pelo ID!");
+            vendeu = true;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "ID inválido: insira apenas números.");
+        }
+    }
+
+    // 2. Se não vendeu por ID, tenta pela linha selecionada
+    if (!vendeu) {
+        int linhaSelecionada = tabelaProdutos.getSelectedRow();
+        if (linhaSelecionada != -1) {
+            int idSelecionado = Integer.parseInt(tabelaProdutos.getValueAt(linhaSelecionada, 0).toString());
+            dao.venderProduto(idSelecionado);
+            JOptionPane.showMessageDialog(null, "Produto vendido com sucesso pela tabela!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Digite um ID válido ou selecione um produto na tabela.");
+        }
+    }
+
+    // Atualiza a tabela após venda
+    listarProdutos();
+    id_produto_venda.setText(""); // limpa o campo
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed
