@@ -189,9 +189,27 @@ public class listagemVIEW extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void listarProdutos(){
+        try {
+            ProdutosDAO produtosdao = new ProdutosDAO();
+            
+            DefaultTableModel model = (DefaultTableModel) tabelaProdutos.getModel();
+            model.setNumRows(0);
+            
+            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
+            
+            for(int i = 0; i < listagem.size(); i++){
+                model.addRow(new Object[]{
+                    listagem.get(i).getId(),
+                    listagem.get(i).getNome(),
+                    listagem.get(i).getValor(),
+                    listagem.get(i).getStatus()
+                });
+            }
+        } catch (Exception e) {
+        }
+    
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -237,25 +255,4 @@ public class listagemVIEW extends javax.swing.JFrame {
     private javax.swing.JTable tabelaProdutos;
     // End of variables declaration//GEN-END:variables
 
-    private void listarProdutos(){
-        try {
-            ProdutosDAO produtosdao = new ProdutosDAO();
-            
-            DefaultTableModel model = (DefaultTableModel) tabelaProdutos.getModel();
-            model.setNumRows(0);
-            
-            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
-            for(int i = 0; i < listagem.size(); i++){
-                model.addRow(new Object[]{
-                    listagem.get(i).getId(),
-                    listagem.get(i).getNome(),
-                    listagem.get(i).getValor(),
-                    listagem.get(i).getStatus()
-                });
-            }
-        } catch (Exception e) {
-        }
-    
-    }
 }
